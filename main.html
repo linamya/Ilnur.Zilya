@@ -18,35 +18,28 @@
         </svg>
     </button>
 
-    <!-- Основной контент (мобильный экран) -->
     <div class="main-content">
         
-        <!-- БЛОК 1: Главное фото (исправил опечатку в названии) -->
         <section class="page-block">
             <img src="main-photo.png" alt="Главное фото" class="taplink-img">
         </section>
 
-        <!-- БЛОК 2: Календарь -->
         <section class="page-block">
             <img src="calendar.png" alt="Календарь" class="taplink-img">
         </section>
 
-        <!-- БЛОК 3: Место проведения (Кликабельное) -->
         <section class="page-block">
             <a href="https://yandex.ru/maps/org/emerald_kholl/168890453645/?ll=49.158597%2C55.837697&z=17" target="_blank" class="map-link">
                 <img src="location.png" alt="Место проведения" class="taplink-img">
             </a>
         </section>
 
-        <!-- БЛОК 4: Тайминг дня -->
         <section class="page-block">
             <img src="timing.png" alt="Тайминг дня" class="taplink-img">
         </section>
 
-        <!-- БЛОК 5: Галерея Дресс-кода (Слайдер теперь внутри главного контейнера) -->
         <section class="page-block dress-slider-section">
             
-            <!-- Сама галерея -->
             <div class="slider-container">
                 <div class="slider-item" id="slide1">
                     <img src="dress1.png" alt="Вариант дресс-кода 1">
@@ -65,13 +58,11 @@
                 </div>
             </div>
 
-            <!-- Стрелки навигации -->
             <div class="slider-arrows">
                 <button class="arrow prev-arrow" onclick="moveSlide(-1)">&#10094;</button> 
                 <button class="arrow next-arrow" onclick="moveSlide(1)">&#10095;</button>
             </div>
 
-            <!-- Точки навигации -->
             <div class="slider-dots">
                 <span class="dot active"></span>
                 <span class="dot"></span>
@@ -81,15 +72,15 @@
             </div>
 
         </section>
-<section class="page-block dress-slider-section">
-            </section>
 
         <section class="page-block">
             <img src="wishes.png" alt="Пожелания" class="taplink-img">
         </section>
+
         <section class="page-block">
             <img src="contacts.png" alt="Контакты" class="taplink-img">
         </section>
+
         <section class="page-block timer-section">
             <div class="timer-container">
                 <div class="timer-title">До свадьбы осталось:</div>
@@ -113,192 +104,70 @@
                 </div>
             </div>
         </section>
+
         <section class="page-block">
             <img src="final-photo.png" alt="Финальное фото" class="taplink-img">
         </section>
-    </div> <!-- Конец главного контейнера -->
-
-   <script>
-        // --- 1. ЛОГИКА МУЗЫКИ ---
-        try {
-            if (localStorage.getItem('playMusic') === 'true') {
-                const audio = document.getElementById('bg-music');
-                if (audio) {
-                    audio.currentTime = 33;
-                    audio.play().catch(function(error) {
-                        console.log("Браузер заблокировал музыку:", error);
-                    });
-                }
-                localStorage.removeItem('playMusic');
-            }
-        } catch (e) { console.error("Ошибка музыки:", e); }
-
-        // --- 2. ЛОГИКА СЛАЙДЕРА (ИСПРАВЛЕНА: БЕЗ ДРОЖАНИЯ ТОЧЕК) ---
-        try {
-            const container = document.querySelector('.slider-container');
-            const slides = document.querySelectorAll('.slider-item');
-            const dots = document.querySelectorAll('.dot');
-            let currentIndex = 0;
-
-            // Навешиваем умный следильщик (Intersection Observer)
-            const observerOptions = {
-                root: container,
-                threshold: 0.51 // Слайд считается активным, когда он виден более чем на 51%
-            };
-
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        // Узнаем индекс слайда, который сейчас по центру
-                        const index = Array.from(slides).indexOf(entry.target);
-                        currentIndex = index;
-                        
-                        // Чётко и без дрожания переключаем активную точку
-                        dots.forEach(dot => dot.classList.remove('active'));
-                        if (dots[index]) {
-                            dots[index].classList.add('active');
-                        }
-                    }
-                });
-            }, observerOptions);
-
-            // Запускаем слежку за каждым слайдом
-            slides.forEach(slide => observer.observe(slide));
-
-            // Логика работы стрелочек (вперед / назад)
-            window.moveSlide = function(direction) {
-                const slidesCount = slides.length;
-                currentIndex += direction;
-                
-                if (currentIndex >= slidesCount) currentIndex = 0;
-                if (currentIndex < 0) currentIndex = slidesCount - 1;
-                
-                const slideWidth = container.clientWidth;
-                container.scrollTo({
-                    left: slideWidth * currentIndex,
-                    behavior: 'smooth'
-                });
-            }
-
-            // Добавим возможность кликать по самим точкам
-            window.currentSlide = function(index) {
-                currentIndex = index;
-                const slideWidth = container.clientWidth;
-                container.scrollTo({
-                    left: slideWidth * currentIndex,
-                    behavior: 'smooth'
-                });
-            }
-
-            // Привязываем клик к точкам, раз уж сделали их span
-            dots.forEach((dot, index) => {
-                dot.setAttribute('onclick', `currentSlide(${index})`);
-            });
-
-        } catch (e) { console.error("Ошибка слайдера:", e); }
-
-        // --- 3. ЛОГИКА ТАЙМЕРА ---
-        (function() {
-            const countDownDate = new Date(2026, 7, 14, 14, 0, 0).getTime();
-
-            function updateTimer() {
-                const now = new Date().getTime();
-                const distance = countDownDate - now;
-
-                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-                const dEl = document.getElementById("days");
-                const hEl = document.getElementById("hours");
-                const mEl = document.getElementById("minutes");
-                const sEl = document.getElementById("seconds");
-
-                if (dEl && hEl && mEl && sEl) {
-                    if (distance < 0) {
-                        clearInterval(timerInterval);
-                        dEl.innerText = "00";
-                        hEl.innerText = "00";
-                        mEl.innerText = "00";
-                        sEl.innerText = "00";
-                        const displayEl = document.querySelector(".timer-display");
-                        if (displayEl) {
-                            displayEl.innerHTML = "<span style='font-size: 24px; font-family: \"Forum\", serif;'>Событие началось!</span>";
-                        }
-                    } else {
-                        dEl.innerText = days < 10 ? "0" + days : days;
-                        hEl.innerText = hours < 10 ? "0" + hours : hours;
-                        mEl.innerText = minutes < 10 ? "0" + minutes : minutes;
-                        sEl.innerText = seconds < 10 ? "0" + seconds : seconds;
-                    }
-                }
-            }
-
-            updateTimer();
-            const timerInterval = setInterval(updateTimer, 1000);
-        })();
-    </script>
-    <script>
+    </div> <script>
         // ==========================================================
-        // --- 1. ЛОГИКА МУЗЫКИ С ПЛАВАЮЩЕЙ КНОПКОЙ И ПУЛЬСАЦИЕЙ ---
+        // --- 1. ЛОГИКА МУЗЫКИ С ЖЕЛЕЗОБЕТОННОЙ ПЕРЕМОТКОЙ ---------
         // ==========================================================
         try {
             const audio = document.getElementById('bg-music');
             const musicBtn = document.getElementById('music-toggle');
             const iconPlay = document.querySelector('.icon-play');
             const iconPause = document.querySelector('.icon-pause');
+            let isSkippedToTarget = false; // Флаг, чтобы перемотать только ОДИН раз при старте
 
             if (audio && musicBtn) {
-              // Функция включения/выключения по кнопке (С ГАРАНТИРОВАННОЙ ПЕРЕМОТКОЙ)
+                
+                // Функция принудительного прыжка на 33 секунду
+                function forceSeekTo33() {
+                    if (!isSkippedToTarget) {
+                        audio.currentTime = 33;
+                        isSkippedToTarget = true;
+                    }
+                }
+
+                // Управление кнопкой Play/Pause
                 window.toggleMusic = function() {
                     if (audio.paused) {
-                        // Если музыка в самом начале (меньше 33 секунд)
-                        if (audio.currentTime < 33) {
-                            // Сначала жестко ставим 33 секунды
-                            audio.currentTime = 33;
-
-                            // Делаем крошечную паузу в 150 миллисекунд, чтобы телефон успел 
-                            // осознать изменение времени, и только потом даем команду играть
-                            setTimeout(function() {
-                                audio.play().then(() => {
-                                    updateUI(true);
-                                }).catch(e => console.log("Браузер заблокировал звук:", e));
-                            }, 150);
-                        } else {
-                            // Если музыка уже перематывалась или стояла на паузе дальше 33-й секунды,
-                            // запускаем её мгновенно без задержек
-                            audio.play().then(() => {
-                                updateUI(true);
-                            }).catch(e => console.log("Браузер заблокировал звук:", e));
+                        // Если трек в самом начале, готовим одноразовое событие прыжка при старте потока
+                        if (!isSkippedToTarget && audio.currentTime < 33) {
+                            audio.addEventListener('timeupdate', forceSeekTo33);
                         }
+                        
+                        audio.play().then(() => {
+                            updateUI(true);
+                        }).catch(e => console.log("Браузер заблокировал звук:", e));
                     } else {
-                        // Если играла — ставим на паузу
                         audio.pause();
                         updateUI(false);
                     }
                 };
-                // Управление внешним видом (иконки + пульсация)
+
+                // Обновление интерфейса кнопки
                 function updateUI(isPlaying) {
                     if (isPlaying) {
                         iconPlay.style.display = 'none';
                         iconPause.style.display = 'block';
-                        musicBtn.classList.remove('pulse-animation'); // Выключаем пульсацию во время игры
+                        musicBtn.classList.remove('pulse-animation');
                     } else {
                         iconPlay.style.display = 'block';
                         iconPause.style.display = 'none';
-                        musicBtn.classList.add('pulse-animation'); // Возвращаем пульсацию на паузе
+                        musicBtn.classList.add('pulse-animation');
                     }
                 }
 
-                // Автоматический запуск, если гость пришел с первой страницы (конверта)
+                // Автостарт после перехода с конверта
                 if (localStorage.getItem('playMusic') === 'true') {
-                    audio.currentTime = 33;
+                    audio.addEventListener('timeupdate', forceSeekTo33);
+                    
                     audio.play().then(() => {
                         updateUI(true);
                         localStorage.removeItem('playMusic');
                     }).catch(() => {
-                        console.log("Автоплей заблокирован системой. Ждем нажатия на пульсирующую кнопку.");
+                        console.log("Автоплей заблокирован. Кнопка ждет нажатия.");
                     });
                 }
             }
@@ -306,7 +175,7 @@
 
 
         // ==========================================================
-        // --- 2. ЛОГИКА СЛАЙДЕРА (Твой рабочий код без дрожания) ---
+        // --- 2. ЛОГИКА СЛАЙДЕРА (ИДЕАЛЬНАЯ, БЕЗ ДРОЖАНИЯ ТОЧЕК) ----
         // ==========================================================
         try {
             const container = document.querySelector('.slider-container');
@@ -350,7 +219,7 @@
 
 
         // ==========================================================
-        // --- 3. ЛОГИКА ТАЙМЕРА (Твой рабочий Forum-таймер) --------
+        // --- 3. ЛОГИКА ТАЙМЕРА (FORUM ТАЙМЕР НА 14.08.2026) -------
         // ==========================================================
         (function() {
             const countDownDate = new Date(2026, 7, 14, 14, 0, 0).getTime();
@@ -389,6 +258,5 @@
             const timerInterval = setInterval(updateTimer, 1000);
         })();
     </script>
-
 </body>
 </html>
