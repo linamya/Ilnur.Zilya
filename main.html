@@ -38,6 +38,10 @@
             <img src="timing.png" alt="Тайминг дня" class="taplink-img">
         </section>
 
+        <section class="page-block">
+            <img src="dresscode.png" alt="Дресс-код" class="taplink-img">
+        </section>
+
         <section class="page-block dress-slider-section">
             
             <div class="slider-container">
@@ -117,11 +121,10 @@
             const musicBtn = document.getElementById('music-toggle');
             const iconPlay = document.querySelector('.icon-play');
             const iconPause = document.querySelector('.icon-pause');
-            let isSkippedToTarget = false; // Флаг, чтобы перемотать только ОДИН раз при старте
+            let isSkippedToTarget = false;
 
             if (audio && musicBtn) {
                 
-                // Функция принудительного прыжка на 33 секунду
                 function forceSeekTo33() {
                     if (!isSkippedToTarget) {
                         audio.currentTime = 33;
@@ -129,10 +132,8 @@
                     }
                 }
 
-                // Управление кнопкой Play/Pause
                 window.toggleMusic = function() {
                     if (audio.paused) {
-                        // Если трек в самом начале, готовим одноразовое событие прыжка при старте потока
                         if (!isSkippedToTarget && audio.currentTime < 33) {
                             audio.addEventListener('timeupdate', forceSeekTo33);
                         }
@@ -146,7 +147,6 @@
                     }
                 };
 
-                // Обновление интерфейса кнопки
                 function updateUI(isPlaying) {
                     if (isPlaying) {
                         iconPlay.style.display = 'none';
@@ -159,7 +159,6 @@
                     }
                 }
 
-                // Автостарт после перехода с конверта
                 if (localStorage.getItem('playMusic') === 'true') {
                     audio.addEventListener('timeupdate', forceSeekTo33);
                     
