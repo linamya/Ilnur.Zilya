@@ -250,11 +250,12 @@
             const iconPause = document.querySelector('.icon-pause');
 
             if (audio && musicBtn) {
-                // Функция включения/выключения по кнопке
+               // Функция включения/выключения по кнопке (ИСПРАВЛЕННАЯ)
                 window.toggleMusic = function() {
                     if (audio.paused) {
-                        // Если музыка стояла на паузе — включаем с 33 секунды (при первом старте)
-                        if (audio.currentTime === 0) {
+                        // Если музыка только включается и её текущее время меньше 33 секунд, 
+                        // принудительно перематываем на 0:33
+                        if (audio.currentTime < 33) {
                             audio.currentTime = 33;
                         }
                         audio.play().then(() => {
@@ -266,7 +267,6 @@
                         updateUI(false);
                     }
                 };
-
                 // Управление внешним видом (иконки + пульсация)
                 function updateUI(isPlaying) {
                     if (isPlaying) {
